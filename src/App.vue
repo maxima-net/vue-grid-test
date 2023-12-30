@@ -30,6 +30,7 @@
 			<ag-grid-vue 
 				style="height: 100%" 
 				:class="themeClass" 
+				:defaultColDef="defaultColDef"
 				:columnDefs="colDefs" 
 				:rowData="rowData"
 				@cell-clicked ="onCellClicked">
@@ -77,14 +78,14 @@ export default {
 		]);
 
 		const colDefs = ref([
-			{ field: "id" },
-			{ field: "mission" },
-			{ field: "company" },
-			{ field: "location" },
-			{ field: "date" },
-			{ field: "price" },
+			{ field: "id", filter: 'agNumberColumnFilter'},
+			{ field: "mission", filter: 'agMultiColumnFilter' }, 	// It seems for 'multy' and 'set' we need to configure grid data layer
+			{ field: "company", filter: 'agSetColumnFilter'},		// see documentation https://www.ag-grid.com/vue-data-grid/filtering/ or it is paid feature
+			{ field: "location", filter: 'agSetColumnFilter'},
+			{ field: "date", filter: 'agDateColumnFilter', },
+			{ field: "price", filter: 'agNumberColumnFilter' },
 			{ field: "successful" },
-			{ field: "rocket" }
+			{ field: "rocket",  filter: 'agSetColumnFilter'}
 		]);
 
 		return {
@@ -92,6 +93,16 @@ export default {
 			colDefs,
 			themeClass: "ag-theme-quartz",
 		};
+	},
+	data: function () {
+		return {
+			defaultColDef: {
+				flex: 1,
+				minWidth: 150,
+				filter: 'agTextColumnFilter',
+				menuTabs: ['filterMenuTab'],
+			}
+		}
 	},
 	methods: {
 		onCellClicked(event) {
